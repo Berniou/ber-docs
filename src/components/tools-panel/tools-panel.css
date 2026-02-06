@@ -10,3 +10,8 @@ li{
 #tools-list :first-child{
     border-left: none;
 }
+
+#tools-list-container{
+    width: 100vw;
+    
+}

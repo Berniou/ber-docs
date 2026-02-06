@@ -61,7 +61,7 @@ const ToolsPanel = ({}) => {
 
     return (
         <>
-            <div>
+            <div id="tools-list-container">
                 <ul id="tools-list">
                     <li><button id="strong-tool" onClick={formatSelection}><strong>B</strong></button></li>
                     <li><button id="italic-tool" onClick={formatSelection}><em>I</em></button></li>

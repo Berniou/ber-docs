@@ -1,3 +1,11 @@
 :root::-webkit-scrollbar{
   display: none;
 }
+
+:root, body{
+  scrollbar-width: none;
+  padding: 0px;
+  margin: 0px;
+
+  overflow: none;
+}

@@ -1,12 +1,12 @@
 .editor-zone {
-    width: 100rem;
+    width: 100vw;
     height: fit-content;
     min-height: 500px;
     border: solid 1px black;
     display: flex;
     justify-content: center;
 
-    padding: 50px;
+    padding:0px;
 
     background-color: #c9d8ea;
 }
