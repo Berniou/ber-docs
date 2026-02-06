@@ -1,0 +1,12 @@
+#tools-list li{
+    list-style: none;
+    display: inline;
+}
+
+li{
+    border-left: solid 1px;
+}
+
+#tools-list :first-child{
+    border-left: none;
+}
