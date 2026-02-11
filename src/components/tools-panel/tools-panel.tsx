@@ -9,13 +9,9 @@ const ToolsPanel = ({}) => {
     const RICH_TEXT_AREA_ID = "text-zone";
 
     const formatSelection = (e: SyntheticEvent<HTMLButtonElement>): void => {
-
-        console.log("entered.")
         
         // Here I get the format node to apply on a selected text in the text zone.
         const toolElementName = e.currentTarget.firstChild?.nodeName.toLowerCase() ?? "";
-
-        console.log(toolElementName)
 
         // We create a new node to format the selected text.
         const nodeToBeInserted:HTMLElement = document.createElement(toolElementName);
@@ -30,11 +26,11 @@ const ToolsPanel = ({}) => {
             return;
         }
 
-        console.log("zone founded");
+        applyFormat(richTextArea, nodeToBeInserted);
 
-        //TODO - To remove.
-        console.log(toolElementName);
+    }
 
+    const applyFormat = (textZone : HTMLElement, nodeFormat: HTMLElement) =>{
         // Here with get the selected text or elements from the window.
         const selection = window.getSelection();
 
@@ -46,14 +42,14 @@ const ToolsPanel = ({}) => {
             return;
 
         //We verify that the selected is from the editor area.
-        if(richTextArea.contains(range.commonAncestorContainer)){
+        if(textZone.contains(range.commonAncestorContainer)){
             //we extract the selected text or elements.
-            const extractedText = range.extractContents();
+            const extractedFragment = range.extractContents();
 
             //we put it in the new node so that we can format the selected text.
-            nodeToBeInserted.appendChild(extractedText);
+            nodeFormat.appendChild(extractedFragment);
 
-            range.insertNode(nodeToBeInserted);
+            range.insertNode(nodeFormat);
         }
 
     }
@@ -63,10 +59,10 @@ const ToolsPanel = ({}) => {
         <>
             <div id="tools-list-container">
                 <ul id="tools-list">
-                    <li><button id="strong-tool" onClick={formatSelection}><strong>B</strong></button></li>
-                    <li><button id="italic-tool" onClick={formatSelection}><em>I</em></button></li>
-                    <li><button id="underline-tool" onClick={formatSelection}><u>U</u></button></li>
-                    <li><button id="strike-tool" onClick={formatSelection}><s>S</s></button></li>
+                    <li><button id="strong-tool" onClick={formatSelection} className="button-38"><strong>B</strong></button></li>
+                    <li><button id="italic-tool" onClick={formatSelection} className="button-38"><em>I</em></button></li>
+                    <li><button id="underline-tool" onClick={formatSelection} className="button-38"><u>U</u></button></li>
+                    <li><button id="strike-tool" onClick={formatSelection} className="button-38"><s>S</s></button></li>
                 </ul>
             </div>
         </>
