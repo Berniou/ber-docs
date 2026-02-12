@@ -26,12 +26,7 @@ const ToolsPanel = ({}) => {
             return;
         }
 
-        applyFormat(richTextArea, nodeToBeInserted);
-
-    }
-
-    const applyFormat = (textZone : HTMLElement, nodeFormat: HTMLElement) =>{
-        // Here with get the selected text or elements from the window.
+         // Here we get the selected text or elements from the window.
         const selection = window.getSelection();
 
         // We get the first checked elements.
@@ -41,8 +36,57 @@ const ToolsPanel = ({}) => {
         if(!range || range?.collapsed)
             return;
 
-        //We verify that the selected is from the editor area.
-        if(textZone.contains(range.commonAncestorContainer)){
+         //We verify that the selected is from the editor area.
+        if(!richTextArea.contains(range.commonAncestorContainer))
+            return;
+
+        // We check the format of the element.
+        // const span = document.createElement('span');
+        // span.appendChild(range.cloneContents());
+        // const alreadyBold = span.querySelector(FORMAT_TOOLS_LIST.toString());
+
+        // if(alreadyBold){
+        //     unwrapFormat(range, nodeToBeInserted);
+        // }else{
+        //      applyFormat(range, nodeToBeInserted);
+        // }
+
+        wrapFormatInOrder(range, nodeToBeInserted);
+    }
+
+    const unwrapFormat = (range: Range, nodeToUnwrap: HTMLElement) => {
+
+        const contents = range.extractContents();
+
+        const walker = document.createTreeWalker(
+            contents,
+            NodeFilter.SHOW_ELEMENT,
+            (node) => {
+                console.log(node.nodeName)
+                return node.nodeName === nodeToUnwrap.nodeName
+                        ? NodeFilter.FILTER_ACCEPT
+                        : NodeFilter.FILTER_SKIP;
+            }
+        );
+
+        let node;
+
+        //On parcourt les noeuds selectionnés.
+        //On déplace le premier enfant de chaque noeud à son grand parent, juste avant le noeud lui-même et on supprime le noeud du parent.
+        while(node = walker.nextNode()){
+            const parent = node.parentNode;
+            if(node.firstChild){
+                parent?.insertBefore(node.firstChild, node);
+                parent?.removeChild(node);
+            }
+        }
+
+        range.insertNode(contents);
+        
+    }
+
+    const applyFormat = (range: Range, nodeFormat: HTMLElement) =>{
+
             //we extract the selected text or elements.
             const extractedFragment = range.extractContents();
 
@@ -50,9 +94,62 @@ const ToolsPanel = ({}) => {
             nodeFormat.appendChild(extractedFragment);
 
             range.insertNode(nodeFormat);
+
+    }
+
+    const wrapFormatInOrder = (range: Range, nodeFormat: Element) => {
+
+        const updatedSelection = range.extractContents();
+
+        const  orderedFormatTag = new Map<string, number>([
+            ["s", 1],
+            ["u", 10],
+            ["em", 100],
+            ["i", 100],
+            ["b", 1000],
+            ["strong", 1000],
+        ]);
+
+        let nodeParent = updatedSelection.firstChild;
+        let currentNode;
+
+        
+
+        let priorityParent = orderedFormatTag.get(nodeParent?.nodeName.toLowerCase() ?? "") ?? -1;
+
+         console.log(`priorityParent: ${nodeParent?.nodeName}`);
+        const priorityFormatTarget = orderedFormatTag.get(nodeFormat?.nodeName.toLowerCase() ?? "") ?? -1;
+
+         console.log(`priorityParent: ${priorityParent} - priorityFormatTarget: ${priorityFormatTarget}`)
+        
+        //We order the embedding according to node priority from orderedFormatTag Map.
+        // while(priorityParent > priorityFormatTarget && FORMAT_TOOLS_LIST.includes(nodeParent?.nodeName.toLowerCase() ?? "")){
+
+           
+
+        //     currentNode = nodeParent;
+        //     nodeParent = nodeParent?.parentNode ?? null;
+
+        //     // Je remplace le noeud enfant par son contenue à l'intérieur du parent du noeud.
+        //     nodeParent?.insertBefore(updatedSelection, currentNode);
+        //     if(currentNode)
+        //         nodeParent?.removeChild(currentNode);
+        //     nodeParent = nodeParent?.parentNode ?? null;
+
+        //     priorityParent = orderedFormatTag.get(nodeParent?.nodeName ?? "") ?? -1;
+        // }
+        
+        if(priorityParent === priorityFormatTarget && currentNode){
+            nodeFormat.appendChild(currentNode);
+            range.insertNode(nodeFormat);
+        }
+        else {
+            range.insertNode(updatedSelection);
         }
 
     }
+
+    
 
 
     return (
