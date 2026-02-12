@@ -5,19 +5,26 @@ import './rich-text-area.css'
 
 const RichTextArea = ({}) => {
 
-    useEffect(()=>{
-        
-        document.getElementById("text-zone")?.append(`<strong>Texte Gras.</strong>
-                    <br/>
-                    <em>Texte italique.</em>
-                    <br/>
-                    <u>Texte souligné.</u>
-                    <br/>
-                    <s>Texte barré.</s>
-                    <br/>
-                    Texte normal.`);
-    });
+    useEffect(() => {
+        const textZone = document.getElementById("text-zone");
 
+        //TODO - remove
+        const b = document.createElement("strong");
+        const br = document.createElement("br");
+        const u = document.createElement("u");
+        const i = document.createElement("em");
+
+        b.append("Bold text.");
+        u.append("underlined text.");
+        i.append("Italic text.");
+
+        textZone?.appendChild(b);
+        textZone?.appendChild(br.cloneNode());
+        textZone?.appendChild(u);
+        textZone?.appendChild(br.cloneNode());
+        textZone?.appendChild(i);
+        textZone?.appendChild(br.cloneNode());
+    }, [])
     
 
     return (
